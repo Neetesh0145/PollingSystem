@@ -1,0 +1,1490 @@
+Frontend Technology:  html,css,javascript,thymleaf
+Backend Technology:   Java,Spring Boot,Sprint Data JPA,
+DataBase : 	      MYSQL
+
+Database Script:
+CREATE TABLE `candidatemstr` (
+  `candidateId` bigint(20) NOT NULL AUTO_INCREMENT,
+  `candidateName` varchar(50) NOT NULL,
+  `noOfChallengeSolve` int(4) DEFAULT NULL,
+  `expertiseLevel` int(4) DEFAULT NULL,
+  `DSexpertiseLevel` int(4) DEFAULT NULL,
+  `algoExpertiseLevel` int(4) DEFAULT NULL,
+  `javaExpertiseLevel` int(4) DEFAULT NULL,
+  `pythonExpertiseLevel` int(4) DEFAULT NULL,
+  `updatedBy` varchar(50) DEFAULT NULL,
+  `updatedDate` timestamp NULL DEFAULT NULL,
+  `createdBy` varchar(50) DEFAULT NULL,
+  `createdDate` timestamp NULL DEFAULT NULL,
+  `activeStatus` varchar(1) DEFAULT NULL,
+  `candidateEmail` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`candidateId`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+
+Backend 
+Files: Entity,Controller,Component,Repository,Model
+
+===========Entity=========
+package com.demo.entity;
+
+import java.sql.Timestamp;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+
+@Entity
+@Table(name="candidatemstr")
+public class Candidate {
+
+	
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "candidateId", unique = true, nullable = false)
+	private Long candidateId;
+	
+	@Column(name = "candidateName")
+	private String candidateName;
+	
+	@Column(name = "candidateEmail")
+	private String candidateEmail;
+	
+	@Column(name = "noOfChallengeSolve")
+	private Integer noOfChallengeSolve;
+		
+	@Column(name = "expertiseLevel")
+	private Integer expertiseLevel;
+	
+	@Column(name = "DSexpertiseLevel")
+	private Integer DSexpertiseLevel;
+	
+	@Column(name = "algoExpertiseLevel")
+	private Integer algoExpertiseLevel;
+	
+	@Column(name = "javaExpertiseLevel")
+	private Integer javaExpertiseLevel;
+
+	@Column(name = "pythonExpertiseLevel")
+	private Integer pythonExpertiseLevel;
+	
+	@Column(name = "createdBy")
+	private String createdBy;
+	
+	@Column(name = "createdDate")
+	private Timestamp createdDate;
+		
+	@Column(name = "updatedBy")
+	private String updatedBy;
+	
+	@Column(name = "updatedDate")
+	private Timestamp updatedDate;
+	
+	@Column(name = "activeStatus")
+	private String activeStatus;
+
+	
+	
+	
+	
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
+	}
+
+	public Long getCandidateId() {
+		return candidateId;
+	}
+
+	public void setCandidateId(Long candidateId) {
+		this.candidateId = candidateId;
+	}
+
+	public String getCandidateName() {
+		return candidateName;
+	}
+
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+
+	public Integer getNoOfChallengeSolve() {
+		return noOfChallengeSolve;
+	}
+
+	public void setNoOfChallengeSolve(Integer noOfChallengeSolve) {
+		this.noOfChallengeSolve = noOfChallengeSolve;
+	}
+
+	public Integer getExpertiseLevel() {
+		return expertiseLevel;
+	}
+
+	public void setExpertiseLevel(Integer expertiseLevel) {
+		this.expertiseLevel = expertiseLevel;
+	}
+
+	public Integer getDSexpertiseLevel() {
+		return DSexpertiseLevel;
+	}
+
+	public void setDSexpertiseLevel(Integer dSexpertiseLevel) {
+		DSexpertiseLevel = dSexpertiseLevel;
+	}
+
+	public Integer getAlgoExpertiseLevel() {
+		return algoExpertiseLevel;
+	}
+
+	public void setAlgoExpertiseLevel(Integer algoExpertiseLevel) {
+		this.algoExpertiseLevel = algoExpertiseLevel;
+	}
+
+	public Integer getJavaExpertiseLevel() {
+		return javaExpertiseLevel;
+	}
+
+	public void setJavaExpertiseLevel(Integer javaExpertiseLevel) {
+		this.javaExpertiseLevel = javaExpertiseLevel;
+	}
+
+	public Integer getPythonExpertiseLevel() {
+		return pythonExpertiseLevel;
+	}
+
+	public void setPythonExpertiseLevel(Integer pythonExpertiseLevel) {
+		this.pythonExpertiseLevel = pythonExpertiseLevel;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Timestamp getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Timestamp createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	public Timestamp getUpdatedDate() {
+		return updatedDate;
+	}
+
+	public void setUpdatedDate(Timestamp updatedDate) {
+		this.updatedDate = updatedDate;
+	}
+
+	public String getActiveStatus() {
+		return activeStatus;
+	}
+
+	public void setActiveStatus(String activeStatus) {
+		this.activeStatus = activeStatus;
+	}
+
+}
+==========Controller==============
+package com.demo;
+
+import java.security.Principal;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.demo.component.CandidateComponent;
+import com.demo.entity.Candidate;
+import com.demo.model.CandidateForm;
+import com.demo.model.ViewAndVoteCandidateForm;
+
+@Controller
+public class CandidateController {
+
+	
+	@Autowired
+	private CandidateComponent candidateComponent;
+	
+	
+
+	@RequestMapping(value = { "/viewandvotecandidate" }, method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView viewAndVoteHome(Model model,
+			@ModelAttribute("viewAndVoteCandidateForm") ViewAndVoteCandidateForm viewAndVoteCandidateForm, Principal principal) {
+	
+		System.out.println(
+				"================================ Inside viewAndVoteHome  ===================================");
+		ModelAndView mv = new ModelAndView("ViewAndVote");
+		
+		try {
+			//search
+			List<Candidate> candidateList=candidateComponent.findActiveCandidate();
+			model.addAttribute("candidateList",candidateList);
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/viewandvotecandidate/{candidateId}" }, method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView viewAndVote(Model model,
+			@PathVariable("candidateId") Long candidateId,
+			@ModelAttribute("viewAndVoteCandidateForm") ViewAndVoteCandidateForm viewAndVoteCandidateForm, Principal principal) {
+	
+		System.out.println(
+				"================================ Inside viewAndVote  ===================================");
+		ModelAndView mv = new ModelAndView("ViewAndVote");
+		
+		try {
+			//search
+			List<Candidate> candidateList=candidateComponent.findActiveCandidate();
+			model.addAttribute("candidateList",candidateList);
+
+			viewAndVoteCandidateForm.setIsView("View");
+			//search
+			List<Candidate> candidateOptional=candidateComponent.findByCandidateId(candidateId);
+			model.addAttribute("candidateList1",candidateOptional);
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mv;
+	}
+	
+	
+	@RequestMapping(value = { "/searchcandidate" }, method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView searchCandidate(Model model,
+			@ModelAttribute("candidateForm") CandidateForm candidateForm, Principal principal) {
+	
+		System.out.println(
+				"================================ Inside searchCandidate  ===================================");
+		ModelAndView mv = new ModelAndView("CandidateHome");
+		
+		try {
+			//search
+			List<Candidate> candidateList=candidateComponent.findCandidate(
+					
+					"%" + (candidateForm.getCandidateNameSearch() == null || candidateForm.getCandidateNameSearch().equals("") ? ""
+							: candidateForm.getCandidateNameSearch().trim()) + "%",
+					
+					"%" + (candidateForm.getCandidateEmailSearch() == null || candidateForm.getCandidateEmailSearch().equals("") ? ""
+							: candidateForm.getCandidateEmailSearch().trim()) + "%",
+					
+					
+					candidateForm.getNoOfChallengeSolveSearch()== null ||	candidateForm.getNoOfChallengeSolveSearch().equals("") ? null :
+						new Integer(candidateForm.getNoOfChallengeSolveSearch()),
+					
+					
+					candidateForm.getExpertiseLevelSearch()== null ||	candidateForm.getExpertiseLevelSearch().equals("") ? null :
+						new Integer(candidateForm.getExpertiseLevelSearch()),
+					
+					candidateForm.getDSexpertiseLevelSearch()== null ||	candidateForm.getDSexpertiseLevelSearch().equals("") ? null :
+						new Integer(candidateForm.getDSexpertiseLevelSearch()),
+					
+					candidateForm.getAlgoExpertiseLevelSearch()== null ||	candidateForm.getAlgoExpertiseLevelSearch().equals("") ? null :
+							new Integer(candidateForm.getAlgoExpertiseLevelSearch()),
+					
+					candidateForm.getJavaExpertiseLevelSearch()== null ||	candidateForm.getJavaExpertiseLevelSearch().equals("") ? null :
+						new Integer(candidateForm.getJavaExpertiseLevelSearch()),		
+					candidateForm.getPythonExpertiseLevelSearch()== null ||	candidateForm.getPythonExpertiseLevelSearch().equals("") ? null :
+						new Integer(candidateForm.getPythonExpertiseLevelSearch())
+					);
+			model.addAttribute("candidateList",candidateList);
+			
+			if(candidateList!=null && candidateList.isEmpty()) {
+				candidateForm.setErrorMessage("No search data found");
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mv;
+	}
+	
+	
+	@RequestMapping(value = { "/addcandidate" }, method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView addCandidate(Model model,
+			@ModelAttribute("candidateForm") CandidateForm candidateForm, Principal principal) {
+	
+		System.out.println("============== Inside addCandidate  ===============");
+		ModelAndView mv = new ModelAndView("CreateCandidate");
+		
+		candidateForm.setMethodType("add");
+		
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/createcandidate" }, method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView createCandidate(Model model,
+			@ModelAttribute("candidateForm") CandidateForm candidateForm, Principal principal) {
+
+		System.out.println(
+				"================================ Inside createCandidate  ===================================");
+		ModelAndView mv = new ModelAndView("CandidateHome");
+	
+		try {
+			if(candidateForm.getMethodType()!=null && candidateForm.getMethodType().equalsIgnoreCase("add")) {
+			
+				Candidate candidate= new Candidate();
+				candidate.setCandidateName(candidateForm.getCandidateName());
+				candidate.setCandidateEmail(candidateForm.getCandidateEmail());
+				candidate.setNoOfChallengeSolve(new Integer(candidateForm.getNoOfChallengeSolve()));
+				candidate.setExpertiseLevel(new Integer(candidateForm.getExpertiseLevel()));
+				candidate.setDSexpertiseLevel(new Integer(candidateForm.getDSexpertiseLevel()));
+				candidate.setAlgoExpertiseLevel(new Integer(candidateForm.getAlgoExpertiseLevel()));
+				candidate.setJavaExpertiseLevel(new Integer(candidateForm.getJavaExpertiseLevel()));
+				candidate.setPythonExpertiseLevel(new Integer(candidateForm.getPythonExpertiseLevel()));
+				
+				candidate.setActiveStatus("Y");
+				candidate.setCreatedBy("Admin");
+				candidate.setCreatedDate(new java.sql.Timestamp(new Date().getTime()));
+				
+				candidateComponent.saveCandidate(candidate);
+				
+				candidateForm.setSuccessMessage("Candidate Created Successfully");
+				//setting id after save
+				candidateForm.setCandidateId(candidate.getCandidateId().toString());
+				
+				//search
+				List<Candidate> candidateList=candidateComponent.findCandidate(
+						
+						"%" + (candidateForm.getCandidateNameSearch() == null || candidateForm.getCandidateNameSearch().equals("") ? ""
+								: candidateForm.getCandidateNameSearch().trim()) + "%",
+						
+						"%" + (candidateForm.getCandidateEmailSearch() == null || candidateForm.getCandidateEmailSearch().equals("") ? ""
+								: candidateForm.getCandidateEmailSearch().trim()) + "%",
+						
+						
+						candidateForm.getNoOfChallengeSolveSearch()== null ||	candidateForm.getNoOfChallengeSolveSearch().equals("") ? null :
+							new Integer(candidateForm.getNoOfChallengeSolveSearch()),
+						
+						
+						candidateForm.getExpertiseLevelSearch()== null ||	candidateForm.getExpertiseLevelSearch().equals("") ? null :
+							new Integer(candidateForm.getExpertiseLevelSearch()),
+						
+						candidateForm.getDSexpertiseLevelSearch()== null ||	candidateForm.getDSexpertiseLevelSearch().equals("") ? null :
+							new Integer(candidateForm.getDSexpertiseLevelSearch()),
+						
+						candidateForm.getAlgoExpertiseLevelSearch()== null ||	candidateForm.getAlgoExpertiseLevelSearch().equals("") ? null :
+								new Integer(candidateForm.getAlgoExpertiseLevelSearch()),
+						
+						candidateForm.getJavaExpertiseLevelSearch()== null ||	candidateForm.getJavaExpertiseLevelSearch().equals("") ? null :
+							new Integer(candidateForm.getJavaExpertiseLevelSearch()),		
+						candidateForm.getPythonExpertiseLevelSearch()== null ||	candidateForm.getPythonExpertiseLevelSearch().equals("") ? null :
+							new Integer(candidateForm.getPythonExpertiseLevelSearch())
+						);
+				model.addAttribute("candidateList",candidateList);
+				
+			}
+			
+			
+			//UPDATE
+			if(candidateForm.getMethodType()!=null && candidateForm.getMethodType().equalsIgnoreCase("update") )
+			{
+				System.out.println(
+						"================================ Inside UpdateAndSave ======================");
+				Candidate candidate = null;
+				Optional<Candidate> candidateOptional = candidateComponent.findCandidateId(new Long(candidateForm.getCandidateId()));
+				
+				if (candidateOptional.isPresent()) {
+					candidate=candidateOptional.get();
+					candidate.setCandidateName(candidateForm.getCandidateName());
+					candidate.setCandidateEmail(candidateForm.getCandidateEmail());
+					candidate.setNoOfChallengeSolve(new Integer(candidateForm.getNoOfChallengeSolve()));
+					candidate.setExpertiseLevel(new Integer(candidateForm.getExpertiseLevel()));
+					candidate.setDSexpertiseLevel(new Integer(candidateForm.getDSexpertiseLevel()));
+					candidate.setAlgoExpertiseLevel(new Integer(candidateForm.getAlgoExpertiseLevel()));
+					candidate.setJavaExpertiseLevel(new Integer(candidateForm.getJavaExpertiseLevel()));
+					candidate.setPythonExpertiseLevel(new Integer(candidateForm.getPythonExpertiseLevel()));
+					candidateComponent.saveCandidate(candidate);
+					
+					
+					//search
+					List<Candidate> candidateList=candidateComponent.findCandidate(
+							
+							"%" + (candidateForm.getCandidateNameSearch() == null || candidateForm.getCandidateNameSearch().equals("") ? ""
+									: candidateForm.getCandidateNameSearch().trim()) + "%",
+							
+							"%" + (candidateForm.getCandidateEmailSearch() == null || candidateForm.getCandidateEmailSearch().equals("") ? ""
+									: candidateForm.getCandidateEmailSearch().trim()) + "%",
+							
+							
+							candidateForm.getNoOfChallengeSolveSearch()== null ||	candidateForm.getNoOfChallengeSolveSearch().equals("") ? null :
+								new Integer(candidateForm.getNoOfChallengeSolveSearch()),
+							
+							
+							candidateForm.getExpertiseLevelSearch()== null ||	candidateForm.getExpertiseLevelSearch().equals("") ? null :
+								new Integer(candidateForm.getExpertiseLevelSearch()),
+							
+							candidateForm.getDSexpertiseLevelSearch()== null ||	candidateForm.getDSexpertiseLevelSearch().equals("") ? null :
+								new Integer(candidateForm.getDSexpertiseLevelSearch()),
+							
+							candidateForm.getAlgoExpertiseLevelSearch()== null ||	candidateForm.getAlgoExpertiseLevelSearch().equals("") ? null :
+									new Integer(candidateForm.getAlgoExpertiseLevelSearch()),
+							
+							candidateForm.getJavaExpertiseLevelSearch()== null ||	candidateForm.getJavaExpertiseLevelSearch().equals("") ? null :
+								new Integer(candidateForm.getJavaExpertiseLevelSearch()),		
+							candidateForm.getPythonExpertiseLevelSearch()== null ||	candidateForm.getPythonExpertiseLevelSearch().equals("") ? null :
+								new Integer(candidateForm.getPythonExpertiseLevelSearch())
+							);
+					model.addAttribute("candidateList",candidateList);
+					
+					candidateForm.setSuccessMessage(
+							"Update sucessfully !.");
+					
+					candidateForm.setMethodType("update");
+				}
+			} 
+		return mv;
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mv;
+	}
+
+	
+	@RequestMapping(value = { "/createCandidateEdit/{candidateId}" }, method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView candidateEdit(Model model,
+			@PathVariable("candidateId") Long candidateId,
+			@ModelAttribute("candidateForm") CandidateForm candidateForm, Principal principal) 
+	{
+		
+		System.out.println("============== Inside candidateEdit  ===============");
+		ModelAndView mv = new ModelAndView("CreateCandidate");
+	
+		
+		Candidate candidate = null;
+		Optional<Candidate> candidateOptional = candidateComponent.findCandidateId(candidateId);
+		
+		if (candidateOptional.isPresent()) {
+			candidate = candidateOptional.get();
+			candidateForm.setCandidateName(candidate.getCandidateName());
+			candidateForm.setCandidateEmail(candidate.getCandidateEmail().toString());
+			candidateForm.setNoOfChallengeSolve(candidate.getNoOfChallengeSolve().toString());
+			candidateForm.setExpertiseLevel(candidate.getExpertiseLevel().toString());
+			candidateForm.setDSexpertiseLevel(candidate.getExpertiseLevel().toString());
+			candidateForm.setAlgoExpertiseLevel(candidate.getAlgoExpertiseLevel().toString());
+			candidateForm.setJavaExpertiseLevel(candidate.getJavaExpertiseLevel().toString());
+			candidateForm.setPythonExpertiseLevel(candidate.getPythonExpertiseLevel().toString());
+			
+		}
+		candidateForm.setMethodType("update");
+		candidateForm.setCandidateId(candidateId.toString());
+		return mv;
+	
+	}
+	
+	
+	@RequestMapping(value = { "/createCandidateDelete/{candidateId}" }, method = { RequestMethod.GET, RequestMethod.POST })
+	public ModelAndView candidateDelete(Model model,
+			@PathVariable(value = "candidateId") Long candidateId,
+			@ModelAttribute("candidateForm") CandidateForm candidateForm, Principal principal)
+	{
+	
+		System.out.println("============== Inside  candidateDelete  ===============");
+		ModelAndView mv = new ModelAndView("CandidateHome");
+		
+		Candidate customerServiceCategory = null;
+		Candidate candidate = null;
+		Optional<Candidate> candidateOptional = candidateComponent.findCandidateId(candidateId);
+		
+		if (candidateOptional.isPresent()) {
+			candidate = candidateOptional.get();
+			candidate.setActiveStatus("N");
+			candidate.setUpdatedBy("Admin");
+			candidate.setUpdatedDate(new java.sql.Timestamp(new Date().getTime()));
+			candidateComponent.saveCandidate(candidate);
+	
+			candidateForm.setSuccessMessage(
+					"Deleted  sucessfully !.");
+		} 
+		
+		//search
+		List<Candidate> candidateList=candidateComponent.findCandidate(
+				
+				"%" + (candidateForm.getCandidateNameSearch() == null || candidateForm.getCandidateNameSearch().equals("") ? ""
+						: candidateForm.getCandidateNameSearch().trim()) + "%",
+				
+				"%" + (candidateForm.getCandidateEmailSearch() == null || candidateForm.getCandidateEmailSearch().equals("") ? ""
+						: candidateForm.getCandidateEmailSearch().trim()) + "%",
+				
+				
+				candidateForm.getNoOfChallengeSolveSearch()== null ||	candidateForm.getNoOfChallengeSolveSearch().equals("") ? null :
+					new Integer(candidateForm.getNoOfChallengeSolveSearch()),
+				
+				
+				candidateForm.getExpertiseLevelSearch()== null ||	candidateForm.getExpertiseLevelSearch().equals("") ? null :
+					new Integer(candidateForm.getExpertiseLevelSearch()),
+				
+				candidateForm.getDSexpertiseLevelSearch()== null ||	candidateForm.getDSexpertiseLevelSearch().equals("") ? null :
+					new Integer(candidateForm.getDSexpertiseLevelSearch()),
+				
+				candidateForm.getAlgoExpertiseLevelSearch()== null ||	candidateForm.getAlgoExpertiseLevelSearch().equals("") ? null :
+						new Integer(candidateForm.getAlgoExpertiseLevelSearch()),
+				
+				candidateForm.getJavaExpertiseLevelSearch()== null ||	candidateForm.getJavaExpertiseLevelSearch().equals("") ? null :
+					new Integer(candidateForm.getJavaExpertiseLevelSearch()),		
+				candidateForm.getPythonExpertiseLevelSearch()== null ||	candidateForm.getPythonExpertiseLevelSearch().equals("") ? null :
+					new Integer(candidateForm.getPythonExpertiseLevelSearch())
+				);
+		model.addAttribute("candidateList",candidateList);
+		return mv;
+	}
+
+}
+===========Component==============
+package com.demo.component;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.demo.entity.Candidate;
+import com.demo.repository.CandidateRepository;
+
+@Service
+public class CandidateComponent {
+
+	@Autowired
+	public CandidateRepository candidateRepository;
+
+	
+	
+	public List<Candidate> findCandidate(String candidateName,String candidateEmail,
+			Integer noOfChallengeSolve,Integer expertiseLevel,
+			Integer DSexpertiseLevel,Integer algoExpertiseLevel,
+			Integer javaExpertiseLevel,Integer pythonExpertiseLevel)
+	{
+
+		return candidateRepository.findCandidate(candidateName, candidateEmail,noOfChallengeSolve,expertiseLevel, DSexpertiseLevel, algoExpertiseLevel, javaExpertiseLevel, pythonExpertiseLevel);
+	}
+	
+	public Candidate saveCandidate(Candidate candidate) {
+		return candidateRepository.saveAndFlush(candidate);
+	}
+	
+	public Optional<Candidate> findCandidateId(Long candidateId){
+		return candidateRepository.findCandidateId(candidateId);
+	}
+	
+	public List<Candidate> findActiveCandidate(){
+		return candidateRepository.findActiveCandidate();
+	}
+	public List<Candidate> findByCandidateId(Long candidateId){
+		return candidateRepository.findByCandidateId(candidateId);
+	}
+}
+
+
+
+
+=================Repository============
+package com.demo.repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import com.demo.entity.Candidate;
+
+@Repository
+public interface CandidateRepository extends JpaRepository<Candidate, Long>{
+
+	
+	@Query("select c from Candidate c "
+			+ " where c.activeStatus='Y'  "
+			+ " and upper(c.candidateName) like upper(:candidateName) "
+			+ " and upper(c.candidateEmail) like upper(:candidateEmail) "
+			+ " and (:noOfChallengeSolve is null or c.noOfChallengeSolve=:noOfChallengeSolve)"
+			+ " and (:expertiseLevel is null or c.expertiseLevel=:expertiseLevel)"
+			+ " and (:DSexpertiseLevel is null or c.DSexpertiseLevel=:DSexpertiseLevel)"
+			+ " and (:algoExpertiseLevel is null or c.algoExpertiseLevel=:algoExpertiseLevel)"
+			+ " and (:javaExpertiseLevel is null or c.javaExpertiseLevel=:javaExpertiseLevel)"
+			+ " and (:pythonExpertiseLevel is null or c.pythonExpertiseLevel=:pythonExpertiseLevel)"
+			)
+	public List<Candidate> findCandidate(String candidateName,String candidateEmail,
+			Integer noOfChallengeSolve,Integer expertiseLevel,
+			Integer DSexpertiseLevel,Integer algoExpertiseLevel,
+			Integer javaExpertiseLevel,Integer pythonExpertiseLevel);
+	
+	
+	
+	@Query("select c from Candidate c where c.activeStatus='Y' and c.candidateId =:candidateId")
+	public Optional<Candidate> findCandidateId(Long candidateId);
+	
+	@Query("select c from Candidate c where c.activeStatus='Y'")
+	public List<Candidate> findActiveCandidate();
+	
+	@Query("select c from Candidate c where c.activeStatus='Y' and c.candidateId =:candidateId")
+	public List<Candidate> findByCandidateId(Long candidateId);
+}
+
+
+===============Model=========================
+package com.demo.model;
+
+import javax.persistence.Column;
+
+public class CandidateForm {
+	
+	private String candidateEmailSearch;
+	private String candidateNameSearch;
+	private String noOfChallengeSolveSearch;
+	private String expertiseLevelSearch;
+	private String DSexpertiseLevelSearch;
+	private String algoExpertiseLevelSearch;
+	private String javaExpertiseLevelSearch;
+	private String pythonExpertiseLevelSearch;
+	
+	private String candidateEmail;
+	private String candidateId;
+	private String candidateName;
+	private String noOfChallengeSolve;
+	private String expertiseLevel;
+	private String DSexpertiseLevel;
+	private String algoExpertiseLevel;
+	private String javaExpertiseLevel;
+	private String pythonExpertiseLevel;
+	
+	private String successMessage;
+	private String errorMessage;
+	private String methodType;
+	
+	
+	
+	
+	public String getCandidateEmailSearch() {
+		return candidateEmailSearch;
+	}
+	public void setCandidateEmailSearch(String candidateEmailSearch) {
+		this.candidateEmailSearch = candidateEmailSearch;
+	}
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
+	}
+	public String getCandidateNameSearch() {
+		return candidateNameSearch;
+	}
+	public void setCandidateNameSearch(String candidateNameSearch) {
+		this.candidateNameSearch = candidateNameSearch;
+	}
+	public String getNoOfChallengeSolveSearch() {
+		return noOfChallengeSolveSearch;
+	}
+	public void setNoOfChallengeSolveSearch(String noOfChallengeSolveSearch) {
+		this.noOfChallengeSolveSearch = noOfChallengeSolveSearch;
+	}
+	public String getExpertiseLevelSearch() {
+		return expertiseLevelSearch;
+	}
+	public void setExpertiseLevelSearch(String expertiseLevelSearch) {
+		this.expertiseLevelSearch = expertiseLevelSearch;
+	}
+	public String getDSexpertiseLevelSearch() {
+		return DSexpertiseLevelSearch;
+	}
+	public void setDSexpertiseLevelSearch(String dSexpertiseLevelSearch) {
+		DSexpertiseLevelSearch = dSexpertiseLevelSearch;
+	}
+	public String getAlgoExpertiseLevelSearch() {
+		return algoExpertiseLevelSearch;
+	}
+	public void setAlgoExpertiseLevelSearch(String algoExpertiseLevelSearch) {
+		this.algoExpertiseLevelSearch = algoExpertiseLevelSearch;
+	}
+	public String getJavaExpertiseLevelSearch() {
+		return javaExpertiseLevelSearch;
+	}
+	public void setJavaExpertiseLevelSearch(String javaExpertiseLevelSearch) {
+		this.javaExpertiseLevelSearch = javaExpertiseLevelSearch;
+	}
+	public String getPythonExpertiseLevelSearch() {
+		return pythonExpertiseLevelSearch;
+	}
+	public void setPythonExpertiseLevelSearch(String pythonExpertiseLevelSearch) {
+		this.pythonExpertiseLevelSearch = pythonExpertiseLevelSearch;
+	}
+	public String getCandidateId() {
+		return candidateId;
+	}
+	public void setCandidateId(String candidateId) {
+		this.candidateId = candidateId;
+	}
+	public String getCandidateName() {
+		return candidateName;
+	}
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+	public String getNoOfChallengeSolve() {
+		return noOfChallengeSolve;
+	}
+	public void setNoOfChallengeSolve(String noOfChallengeSolve) {
+		this.noOfChallengeSolve = noOfChallengeSolve;
+	}
+	public String getExpertiseLevel() {
+		return expertiseLevel;
+	}
+	public void setExpertiseLevel(String expertiseLevel) {
+		this.expertiseLevel = expertiseLevel;
+	}
+	public String getDSexpertiseLevel() {
+		return DSexpertiseLevel;
+	}
+	public void setDSexpertiseLevel(String dSexpertiseLevel) {
+		DSexpertiseLevel = dSexpertiseLevel;
+	}
+	public String getAlgoExpertiseLevel() {
+		return algoExpertiseLevel;
+	}
+	public void setAlgoExpertiseLevel(String algoExpertiseLevel) {
+		this.algoExpertiseLevel = algoExpertiseLevel;
+	}
+	public String getJavaExpertiseLevel() {
+		return javaExpertiseLevel;
+	}
+	public void setJavaExpertiseLevel(String javaExpertiseLevel) {
+		this.javaExpertiseLevel = javaExpertiseLevel;
+	}
+	public String getPythonExpertiseLevel() {
+		return pythonExpertiseLevel;
+	}
+	public void setPythonExpertiseLevel(String pythonExpertiseLevel) {
+		this.pythonExpertiseLevel = pythonExpertiseLevel;
+	}
+	public String getSuccessMessage() {
+		return successMessage;
+	}
+	public void setSuccessMessage(String successMessage) {
+		this.successMessage = successMessage;
+	}
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	public String getMethodType() {
+		return methodType;
+	}
+	public void setMethodType(String methodType) {
+		this.methodType = methodType;
+	}
+	
+	
+}
+=============  Second Model class==============
+package com.demo.model;
+
+public class ViewAndVoteCandidateForm {
+
+	
+	private String candidateEmail;
+	private String candidateId;
+	private String candidateName;
+	private String noOfChallengeSolve;
+	private String expertiseLevel;
+	private String DSexpertiseLevel;
+	private String algoExpertiseLevel;
+	private String javaExpertiseLevel;
+	private String pythonExpertiseLevel;
+	
+	private String successMessage;
+	private String errorMessage;
+	private String methodType;
+	private String isView;
+	private int totalVote;
+	private int computerScore;
+	
+	
+	
+
+	
+	public int getComputerScore() {
+		return computerScore;
+	}
+	public void setComputerScore(int computerScore) {
+		this.computerScore = computerScore;
+	}
+	public int getTotalVote() {
+		return totalVote;
+	}
+	public void setTotalVote(int totalVote) {
+		this.totalVote = totalVote;
+	}
+	public String getIsView() {
+		return isView;
+	}
+	public void setIsView(String isView) {
+		this.isView = isView;
+	}
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
+	}
+	public String getCandidateId() {
+		return candidateId;
+	}
+	public void setCandidateId(String candidateId) {
+		this.candidateId = candidateId;
+	}
+	public String getCandidateName() {
+		return candidateName;
+	}
+	public void setCandidateName(String candidateName) {
+		this.candidateName = candidateName;
+	}
+	public String getNoOfChallengeSolve() {
+		return noOfChallengeSolve;
+	}
+	public void setNoOfChallengeSolve(String noOfChallengeSolve) {
+		this.noOfChallengeSolve = noOfChallengeSolve;
+	}
+	public String getExpertiseLevel() {
+		return expertiseLevel;
+	}
+	public void setExpertiseLevel(String expertiseLevel) {
+		this.expertiseLevel = expertiseLevel;
+	}
+	public String getDSexpertiseLevel() {
+		return DSexpertiseLevel;
+	}
+	public void setDSexpertiseLevel(String dSexpertiseLevel) {
+		DSexpertiseLevel = dSexpertiseLevel;
+	}
+	public String getAlgoExpertiseLevel() {
+		return algoExpertiseLevel;
+	}
+	public void setAlgoExpertiseLevel(String algoExpertiseLevel) {
+		this.algoExpertiseLevel = algoExpertiseLevel;
+	}
+	public String getJavaExpertiseLevel() {
+		return javaExpertiseLevel;
+	}
+	public void setJavaExpertiseLevel(String javaExpertiseLevel) {
+		this.javaExpertiseLevel = javaExpertiseLevel;
+	}
+	public String getPythonExpertiseLevel() {
+		return pythonExpertiseLevel;
+	}
+	public void setPythonExpertiseLevel(String pythonExpertiseLevel) {
+		this.pythonExpertiseLevel = pythonExpertiseLevel;
+	}
+	public String getSuccessMessage() {
+		return successMessage;
+	}
+	public void setSuccessMessage(String successMessage) {
+		this.successMessage = successMessage;
+	}
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	public String getMethodType() {
+		return methodType;
+	}
+	public void setMethodType(String methodType) {
+		this.methodType = methodType;
+	}
+	
+	
+	
+}
+==============BACKEND END================
+
+
+
+
+
+
+
+==================FRONTEND START====================
+=============SCREEN 1==========
+
+
+<!DOCTYPE HTML>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+	integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+	crossorigin="anonymous">
+
+</head>
+<body>
+
+	<form name="candidateForm" th:object="${candidateForm}"
+		th:action="@{/searchcandidate}" method="post" style="margin-left:15px;margin-right:355px">
+
+		<input type="hidden" th:field="${candidateForm.methodType}"
+			id="methodType" name="methodType"> <input type="hidden"
+			th:field="${candidateForm.methodType}" id="methodType"
+			name="methodType">
+
+
+			<div class="panel panel-primary" style="margin-top: 50px;">
+				<div class="panel-heading">
+					<div id="main">
+						<h1 style="font-size: xx-large;">
+							Candidate Search 
+							<a th:href="@{/viewandvotecandidate}" style="margin-left:1000px;" class="btn btn-info btn-lg">Vote</a>
+							<a th:href="@{/addcandidate}" class="btn btn-success btn-lg float-right">Add	Candidate</a>
+							<hr>
+					</div>
+				</div>
+
+				<div class="panel-body">
+					
+				<div class="row">
+			    <div class="col">	
+				<div class="form-group">
+						<label for="candidateNameSearch">Candidate Name
+							:</label><br> <input type="text" style="width: 450px;"
+							placeholder="Enter CandidateName"
+							th:field="${candidateForm.candidateNameSearch}"
+							name="candidateNameSearch" id=" candidateNameSearch"
+							class="form-control">
+					</div>
+				
+				<div class="form-group">
+						<label for="candidateEmailSearch">Candidate Email
+							:</label><br> <input type="text" style="width: 450px;"
+							placeholder="Enter candidateEmailSearch"
+							th:field="${candidateForm.candidateEmailSearch}"
+							name="candidateEmailSearch" id=" candidateEmailSearch"
+							class="form-control">
+					</div>
+				
+					<div class="form-group">
+						<label for="noOfChallengeSolveSearch">NoOfChallengeSolve
+							:</label><br> <input type="text" style="width: 450px;"
+							placeholder="Enter noOfChallengeSolve"
+							th:field="${candidateForm.noOfChallengeSolveSearch}"
+							name="noOfChallengeSolveSearch"
+							id="noOfChallengeSolveSearch" class="form-control">
+					</div>
+				
+				
+					<div class="form-group">
+						<label>ExpertiseLevel:</label><br> <select
+							th:field="${candidateForm.expertiseLevelSearch}" class="form-control" 
+							id="expertiseLevelSearch" name="expertiseLevelSearch"
+							style="width: 450px;">
+							<option value="">----select ExpertiseLevel----</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+						</select>
+					</div>
+				</div>
+				<div class="col">	
+					<div class="form-group">
+						<label>DS Expertise Level:</label><br> <select
+							th:field="${candidateForm.DSexpertiseLevelSearch}" class="form-control" 
+							id="DSexpertiseLevelSearch" name="DSexpertiseLevelSearch"
+							style="width: 450px;">
+							<option value="">----select DSexpertiseLevel----</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label>Algo Expertise Level:</label><br> <select
+							th:field="${candidateForm.algoExpertiseLevelSearch}" class="form-control" 
+							id="algoExpertiseLevelSearch" name="algoExpertiseLevelSearch"
+							style="width: 450px;">
+							<option value="">----select AlgoExpertiseLevel----</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label>Java Expertise Level:</label><br> <select
+							th:field="${candidateForm.javaExpertiseLevelSearch}" class="form-control" 
+							id="javaExpertiseLevelSearch" name="javaExpertiseLevelSearch"
+							style="width: 450px;">
+							<option value="">----select ExpertiseLevel----</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label>Python Expertise Level:</label><br> <select
+							th:field="${candidateForm.pythonExpertiseLevelSearch}" class="form-control" 
+							id="pythonExpertiseLevelSearch" name="pythonExpertiseLevelSearch"
+							style="width: 450px;">
+							<option value="">----select pythonExpertiseLevel----</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+						</select>
+					</div>
+					</div>
+					</div>
+					<button class="btn btn-primary float-right btn-lg" type="submit">Search</button>
+					<br><br><br><br>
+			</div>
+			</div>
+
+			<div class="panel-heading">
+				<div class="text-success">
+					<h4>
+						<span th:utext="${candidateForm.successMessage}"></span>
+				</div>
+				<div class="text-danger">
+					<h4>
+						<span th:utext="${candidateForm.errorMessage}"></span>
+				</div>
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h1 style="font-size: xx-large; text-shadow: black;">Candidate
+							List</h1>
+						<hr>
+					</div>
+					<div class="panel-body">
+						<table class="table table-striped table-bordered table-hover">
+							<thead class="thead-dark">
+
+								<tr>
+									<th>Candidate Name</th>
+									<th>Candidate Email</th>
+									<th>NoOfChallengeSolve</th>
+									<th>expertiseLevel</th>
+									<th>DSexpertiseLevel</th>
+									<th>AlgoExpertiseLevel</th>
+									<th>JavaExpertiseLevel</th>
+									<th>PythonExpertiseLevel</th>
+									<th>Delete</th>
+									<th>Update</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<tr th:each="ml:${candidateList}">
+									<td th:text="${ml.candidateName}" style="font-size: medium;"></td>
+									<td th:text="${ml.candidateEmail}" style="font-size: medium;"></td>
+									<td th:text="${ml.noOfChallengeSolve}"   style="font-size: medium;"></td>
+									<td th:text="${ml.expertiseLevel}" style="font-size: medium;"></td>
+									<td th:text="${ml.DSexpertiseLevel}"   style="font-size: medium;"></td>
+									<td th:text="${ml.algoExpertiseLevel}" style="font-size: medium;"></td>
+									<td th:text="${ml.javaExpertiseLevel}"   style="font-size: medium;"></td>
+									<td th:text="${ml.pythonExpertiseLevel}"   style="font-size: medium;"></td>
+									
+									<!--  -->
+									<td><a	th:href="@{/createCandidateDelete/{candidateId}(candidateId=${ml.candidateId})}"
+										class="btn btn-danger" style="color: white;">Delete</a></td>
+
+									<!-- th:href="@{/createServiceEdit/{serviceCategoryId}(serviceCategoryId=${ml.serviceCategoryId})}" -->									
+									<td><a th:href="@{/createCandidateEdit/{candidateId}(candidateId=${ml.candidateId})}"
+										class="btn btn-info" style="color: white;">Update</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+	</form>
+</body>
+</html>
+
+
+===============SCREEN 2===============
+<!DOCTYPE HTML>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Add Service</title>
+<meta charset="ISO-8859-1">
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+<!-- 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<link
+	href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/ui-lightness/jquery-ui.css'
+	rel='stylesheet'>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+</head>
+<body>
+	<form name="candidateForm" th:object="${candidateForm}" th:action="@{/createc	andidate}" method="post">
+
+		<!--HIDDEN FIELDS START  -->
+		<input type="hidden" th:field="${candidateForm.methodType}" id="methodType" name="methodType"> 
+		<input	type="hidden" th:field="${candidateForm.candidateId}" id="candidateId" name="candidateId">
+		<!--HIDDEN FIELDS ENDS  -->
+
+		<div class="panel panel-primary" style="margin-left: 15px;">
+			<h1 class="text-success" style="display: inline; font-size: xx-large;">Add Candidate
+			
+			<a th:href="@{/searchcandidate}"
+			class="btn btn-info btn-lg float-right" style="margin-right:1450px">Home</a>
+			</h1>
+			
+			<hr><br>
+
+			<div class="panel-body">
+				<div class="form-group">
+				
+				
+					<div class="form-group">
+						<label>Candidate Name:</label><br> <input
+							th:field="${candidateForm.candidateName}" required
+							maxlength="100" type="text"
+							placeholder="Enter candidateName" style="width: 450px;"
+							name="candidateName" id=" candidateName"
+							class="form-control">
+					</div>
+					
+					<div class="form-group">
+						<label>Candidate Email:</label><br> <input
+							th:field="${candidateForm.candidateEmail}" onblur="validateEmail(this)" required
+							maxlength="100" type="text"
+							placeholder="Enter candidateEmail" style="width: 450px;"
+							name="candidateEmail" id=" candidateEmail"
+							class="form-control">
+					</div>
+					
+					<div class="form-group">
+						<label>NoOfChallengeSolve:</label><br> <input
+							th:field="${candidateForm.noOfChallengeSolve}" required
+							maxlength="100" type="text"
+							placeholder="Enter noOfChallengeSolve" style="width: 450px;"
+							name="noOfChallengeSolve" id=" noOfChallengeSolve"
+							class="form-control">
+					</div>
+				
+					<div class="form-group">
+						<label>ExpertiseLevel:</label><br> <select
+							th:field="${candidateForm.expertiseLevel}" class="form-control" required
+							id="expertiseLevel" name="expertiseLevel"
+							style="width: 450px;">
+							<option value="">----select ExpertiseLevel----</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label>DS Expertise Level:</label><br> <select
+							th:field="${candidateForm.DSexpertiseLevel}" class="form-control" required
+							id="DSexpertiseLevel" name="DSexpertiseLevel"
+							style="width: 450px;">
+							<option value="">----select DSexpertiseLevel----</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label>Algo Expertise Level:</label><br> <select
+							th:field="${candidateForm.algoExpertiseLevel}" class="form-control" required
+							id="algoExpertiseLevel" name="algoExpertiseLevel"
+							style="width: 450px;">
+							<option value="">----select AlgoExpertiseLevel----</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label>Java Expertise Level:</label><br> <select
+							th:field="${candidateForm.javaExpertiseLevel}" class="form-control" required
+							id="javaExpertiseLevel" name="javaExpertiseLevel"
+							style="width: 450px;">
+							<option value="">----select ExpertiseLevel----</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+						</select>
+					</div>
+					
+					<div class="form-group">
+						<label>Python Expertise Level:</label><br> <select
+							th:field="${candidateForm.pythonExpertiseLevel}" class="form-control" required
+							id="pythonExpertiseLevel" name="pythonExpertiseLevel"
+							style="width: 450px;">
+							<option value="">----select pythonExpertiseLevel----</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+						</select>
+					</div>
+					<br>
+					<br>
+
+					<div class="text-success">
+						<h4>
+							<span th:utext="${candidateForm.successMessage}"></span>
+					</div>
+					<div class="text-danger">
+						<h4>
+							<span th:utext="${candidateForm.errorMessage}"></span>
+					</div>
+					<button class="btn btn-success  btn-lg" type="submit">Save</button>
+
+
+					</select>
+				</div>
+			</div>
+	</form>
+</body>
+</html>
+
+<script>
+function validateEmail(emailField){
+    var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+    if (reg.test(emailField.value) == false) 
+    {
+        alert('Invalid Email Address');
+        return false;
+    }
+
+    return true;
+
+}
+</script>
+
+
+================SCREEN 3===================
+<!DOCTYPE HTML>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+	integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+	crossorigin="anonymous">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+ 
+</head>
+<body>
+
+	<form name="viewAndVoteCandidateForm" th:object="${viewAndVoteCandidateForm}"
+		 method="post" style="margin-left:15px;margin-right:355px">
+<!-- th:action="@{/searchcandidate}" -->
+<input type="hidden" th:field="${viewAndVoteCandidateForm.isView}"
+			id="isView" name="isView">
+<input type="hidden" th:field="${viewAndVoteCandidateForm.totalVote}"
+			id="totalVote" name="totalVote">
+
+
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h1 style="font-size: xx-large; text-shadow: black;">View and Vote Candidate</h1>
+						<hr>
+					</div>
+					<div class="panel-body">
+						<table class="table table-striped table-bordered table-hover">
+							<thead class="thead-dark">
+
+								<tr>
+									<th>Candidate Name</th>
+									<th>View</th>
+									<th>Vote</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<tr th:each="ml:${candidateList}">
+									<td th:text="${ml.candidateName}" style="font-size: medium;"></td>
+									
+									<!-- th:href="@{/createCandidateDelete/{candidateId}(candidateId=${ml.candidateId})}" -->
+									<td><a	th:href="@{/viewandvotecandidate/{candidateId}(candidateId=${ml.candidateId})}" onclick="viewAndDisplay()"
+										class="btn btn-info" style="color: white;">View</a></td>
+									  <!--   -->
+									<td><a onclick="Vote(this)" th:value="${ml.candidateId}" id="btn1"
+										class="btn btn-success" style="color: white;">Vote</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- <b>Vote Count:</b><p id="computerScore">0</p> -->
+					<h2 > Vote Count:<h2 id="computerScore">0</h2></h2>
+				<!-- <h2 th:text=" ${viewAndVoteCandidateForm.totalVote}" ></h2> -->
+				<span th:if="${viewAndVoteCandidateForm.isView!=null && viewAndVoteCandidateForm.isView=='View'}">
+						<div class="panel-body"> 
+							<br><br><br>
+							<br><br><br><br>
+							
+							<h1 class="text-success" style="font-size: xx-large; text-shadow: black;">Candidate Details</h1>
+							<hr>
+						<table class="table table-striped table-bordered table-hover">
+							<thead class="thead-dark">
+
+								<tr>
+									<th>Candidate Name</th>
+									<th>Candidate Email</th>
+									<th>NoOfChallengeSolve</th>
+									<th>expertiseLevel</th>
+									<th>DSexpertiseLevel</th>
+									<th>AlgoExpertiseLevel</th>
+									<th>JavaExpertiseLevel</th>
+									<th>PythonExpertiseLevel</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<tr th:each="ml:${candidateList1}">
+									<td th:text="${ml.candidateName}" style="font-size: medium;"></td>
+									<td th:text="${ml.candidateEmail}" style="font-size: medium;"></td>
+									<td th:text="${ml.noOfChallengeSolve}"   style="font-size: medium;"></td>
+									<td th:text="${ml.expertiseLevel}" style="font-size: medium;"></td>
+									<td th:text="${ml.DSexpertiseLevel}"   style="font-size: medium;"></td>
+									<td th:text="${ml.algoExpertiseLevel}" style="font-size: medium;"></td>
+									<td th:text="${ml.javaExpertiseLevel}"   style="font-size: medium;"></td>
+									<td th:text="${ml.pythonExpertiseLevel}"   style="font-size: medium;"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					</span>
+					
+				</div>
+	</form>
+</body>
+</html>
+
+<script>
+function viewAndDisplay(){
+
+	document.viewAndVoteCandidateForm.isView.value="View";
+	alert("View: " +document.viewAndVoteCandidateForm.isView.value);
+}
+/* 
+function Vote(){
+	++document.viewAndVoteCandidateForm.totalVote.value;
+	 document.viewAndVoteCandidateForm.totalVote.value=
+		parseInt(document.viewAndVoteCandidateForm.totalVote.value)+1; 
+	alert(document.viewAndVoteCandidateForm.totalVote.value);
+	alert("Vote Successfull!")
+	
+}  */
+function Vote(btn) {
+    var computerScore = document.getElementById('computerScore');
+    var number = computerScore.innerHTML;
+    number++;
+    computerScore.innerHTML = number;
+    alert("Vote Successfull!")
+   
+    
+   document.getElementById(btn.id).disabled = true; 
+  //  document.getElementById("myBtn").disabled = true;
+	
+} 
+
+</script>
+
+
+
+
+
